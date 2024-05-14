@@ -7,63 +7,83 @@ namespace ConsoleRecipeApplication
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Enter the details for the recipe:");//Ask user to enter new recipe
-
-            Console.Write("Enter Number of ingredients: ");//enter amount of ingrediants
-            int NumOfIngredients = int.Parse(Console.ReadLine());
-
-            Console.Write("Enter Number of steps: ");//enter number of step
-            int NumOfSteps = int.Parse(Console.ReadLine());
-
-            Recipe recipe = new Recipe(NumOfIngredients, NumOfSteps);
-
-            recipe.EnterIngredients();
-            recipe.EnterSteps();
+            RecipeManager recipeManager = new RecipeManager();
 
             bool exit = false;
             while (!exit)
             {
-                //Display menu options
-                Console.WriteLine("\nMenu Option:");
-                Console.WriteLine("1. Display recipe");
-                Console.WriteLine("2. Scale recipe");
-                Console.WriteLine("3. Reset quantities");
-                Console.WriteLine("4. Clear all data");
-                Console.WriteLine("5. Exit");
+                Console.WriteLine("\nMenu Options:");
+                Console.WriteLine("1. Add Recipe");
+                Console.WriteLine("2. Display Recipe List");
+                Console.WriteLine("3. Display Recipe Details");
+                Console.WriteLine("4. Exit");
 
-                Console.Write("\nChoose Your Option: "); //Ask user to choose option do do an actiom
+                Console.Write("\nChoose Your Option: ");
                 int command = int.Parse(Console.ReadLine());
 
                 switch (command)
                 {
                     case 1:
-                        recipe.DisplayRecipe();
+                        Recipe recipe = EnterRecipeDetails();
+                        recipeManager.AddRecipe(recipe);
                         break;
                     case 2:
-                        Console.Write("\nEnter Desired scaling Amount : ");
-                        double factor = double.Parse(Console.ReadLine());
-                        recipe.ScaleRecipe(factor);
-                        Console.WriteLine("\nRecipe scaled successfully!");
+                        recipeManager.DisplayRecipeList();
                         break;
                     case 3:
-                        recipe.ResetQuantities();
-                        Console.WriteLine("\nQuantities reset successfully!");
+                        Console.Write("Enter Recipe Name: ");
+                        string recipeName = Console.ReadLine();
+                        recipeManager.DisplayRecipeDetails(recipeName);
                         break;
                     case 4:
-                        recipe.ClearRecipe();
-                        Console.WriteLine("\n Your Recipe was cleared!");
-                        break;
-                    case 5:
                         exit = true;
                         break;
                     default:
                         Console.WriteLine("\nYou have entered an invalid input!");
                         break;
-
-
-
                 }
             }
         }
+
+        // Method to enter recipe details
+        static Recipe EnterRecipeDetails()
+        {
+            Recipe recipe = new Recipe();
+
+            Console.WriteLine("\nEnter Recipe Details:");
+            Console.Write("Name: ");
+            recipe.Name = Console.ReadLine();
+
+            Console.Write("Enter Number of Ingredients: ");
+            int numOfIngredients = int.Parse(Console.ReadLine());
+            for (int i = 0; i < numOfIngredients; i++)
+            {
+                Ingredient ingredient = new Ingredient();
+                Console.WriteLine($"\nIngredient {i + 1}:");
+                Console.Write("Name: ");
+                ingredient.Name = Console.ReadLine();
+                Console.Write("Quantity: ");
+                ingredient.Quantity = double.Parse(Console.ReadLine());
+                Console.Write("Unit: ");
+                ingredient.Unit = Console.ReadLine();
+                Console.Write("Calories: ");
+                ingredient.Calories = int.Parse(Console.ReadLine());
+                Console.Write("Food Group: ");
+                ingredient.FoodGroup = Console.ReadLine();
+                recipe.Ingredients.Add(ingredient);
+            }
+
+            Console.Write("\nEnter Number of Steps: ");
+            int numOfSteps = int.Parse(Console.ReadLine());
+            for (int i = 0; i < numOfSteps; i++)
+            {
+                Step step = new Step();
+                Console.WriteLine($"\nStep {i + 1}:");
+                Console.Write("Description: ");
+                step.Description = Console.ReadLine();
+                recipe.Steps.Add(step);
+            }
+
+            return recipe;
+        }
     }
-}
